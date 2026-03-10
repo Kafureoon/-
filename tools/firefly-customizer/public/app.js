@@ -129,23 +129,43 @@ function classifyAssetPath(value) {
 	return null;
 }
 
-function buildPreviewUrl(assetPath) {
+function buildAssetUrl(assetPath) {
 	if (/^https?:\/\//i.test(assetPath)) {
 		return assetPath;
 	}
 	return `/api/asset?path=${encodeURIComponent(assetPath)}`;
 }
 
+function buildPreviewUrl(
+	assetPath,
+	assetType = classifyAssetPath(assetPath),
+) {
+	if (/^https?:\/\//i.test(assetPath)) {
+		return assetPath;
+	}
+	if (assetType === "image") {
+		return `/api/asset-preview?path=${encodeURIComponent(assetPath)}`;
+	}
+	return buildAssetUrl(assetPath);
+}
+
+function buildAssetDescriptor(assetPath, trace = "state") {
+	const assetType = classifyAssetPath(assetPath);
+	if (!assetType) return null;
+	return {
+		trace,
+		path: assetPath,
+		type: assetType,
+		rawUrl: buildAssetUrl(assetPath),
+		previewUrl: buildPreviewUrl(assetPath, assetType),
+	};
+}
+
 function scanAssets(value, trace = "state", results = []) {
 	if (typeof value === "string") {
-		const assetType = classifyAssetPath(value);
-		if (assetType) {
-			results.push({
-				trace,
-				path: value,
-				type: assetType,
-				previewUrl: buildPreviewUrl(value),
-			});
+		const asset = buildAssetDescriptor(value, trace);
+		if (asset) {
+			results.push(asset);
 		}
 		return results;
 	}
@@ -249,17 +269,25 @@ function formatJson(value) {
 	return JSON.stringify(value, null, 2);
 }
 
+function renderImageElement(asset, altText) {
+	if (!asset?.previewUrl) {
+		return `<div class="media"><span class="helper-line">暂无预览</span></div>`;
+	}
+
+	return `<img loading="lazy" decoding="async" src="${escapeHtml(asset.previewUrl)}" data-raw="${escapeHtml(asset.rawUrl || asset.previewUrl)}" alt="${escapeHtml(altText)}" onerror="if(this.dataset.raw&&this.src!==this.dataset.raw){this.src=this.dataset.raw;return;}this.onerror=null;" />`;
+}
+
 function renderAssetMedia(asset) {
 	if (!asset?.path) {
 		return `<div class="media"><span class="helper-line">当前没有素材</span></div>`;
 	}
 
 	if (asset.type === "image") {
-		return `<div class="media"><img src="${escapeHtml(asset.previewUrl)}" alt="${escapeHtml(asset.trace || asset.path)}" /></div>`;
+		return `<div class="media">${renderImageElement(asset, asset.trace || asset.path)}</div>`;
 	}
 
 	if (asset.type === "audio") {
-		return `<div class="media"><audio controls preload="none" src="${escapeHtml(asset.previewUrl)}"></audio></div>`;
+		return `<div class="media"><audio controls preload="none" src="${escapeHtml(asset.rawUrl || asset.previewUrl)}"></audio></div>`;
 	}
 
 	return `<div class="media"><span class="helper-line">当前路径</span></div>`;
@@ -280,20 +308,12 @@ function renderAssetCard(asset) {
 
 function renderBoundAsset(path, label, uploadTarget) {
 	const assetPath = getValue(state.state, path, "");
-	const assetType = classifyAssetPath(assetPath) || "file";
-	const asset = assetPath
-		? {
-				trace: path,
-				path: assetPath,
-				type: assetType,
-				previewUrl: buildPreviewUrl(assetPath),
-			}
-		: null;
+	const asset = assetPath ? buildAssetDescriptor(assetPath, path) : null;
 
 	return `
 		<div class="list-row">
 			<div class="thumb">
-				${asset?.type === "image" ? `<img src="${escapeHtml(asset.previewUrl)}" alt="${escapeHtml(label)}" />` : `<div class="media"><span class="helper-line">暂无预览</span></div>`}
+				${asset?.type === "image" ? renderImageElement(asset, label) : `<div class="media"><span class="helper-line">暂无预览</span></div>`}
 			</div>
 			<div class="details-grid">
 				<div class="field">
@@ -321,12 +341,14 @@ function renderListAssetEditor(path, label, uploadTarget) {
 					items.length
 						? items
 								.map((item, index) => {
-									const assetType = classifyAssetPath(item) || "file";
-									const previewUrl = buildPreviewUrl(item);
+									const asset = buildAssetDescriptor(
+										item,
+										`${path}[${index}]`,
+									);
 									return `
 										<div class="list-row">
 											<div class="thumb">
-												${assetType === "image" ? `<img src="${escapeHtml(previewUrl)}" alt="${escapeHtml(`${label}-${index + 1}`)}" />` : `<div class="media"><span class="helper-line">暂无预览</span></div>`}
+												${asset?.type === "image" ? renderImageElement(asset, `${label}-${index + 1}`) : `<div class="media"><span class="helper-line">暂无预览</span></div>`}
 											</div>
 											<div class="details-grid">
 												<div class="field">

@@ -1,7 +1,7 @@
 {
   "siteConfig": {
-    "title": "Firefly",
-    "subtitle": "Demo site",
+    "title": "铃音小站",
+    "subtitle": "铃音的秘密据点",
     "description": "Firefly 是一款基于 Astro 框架和 Fuwari 模板开发的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。",
     "themeColor": {
       "hue": 165,
@@ -61,8 +61,8 @@
     "switchable": true,
     "src": {
       "desktop": [
-        "assets/images/DesktopWallpaper/d1.avif",
-        "assets/images/DesktopWallpaper/d2.avif",
+        "assets/images/DesktopWallpaper/1773148254960-ComfyUI_temp_patvu_00001_.png",
+        "assets/images/DesktopWallpaper/1773148323623-ComfyUI_temp_iimts_00006_.png",
         "assets/images/DesktopWallpaper/d3.avif",
         "assets/images/DesktopWallpaper/d4.avif",
         "assets/images/DesktopWallpaper/d5.avif",

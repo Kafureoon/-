@@ -11,6 +11,13 @@ const repoRoot = path.resolve(__dirname, "..", "..");
 const publicDir = path.join(__dirname, "public");
 const stateFile = path.join(repoRoot, "data", "admin", "customizer.state.json");
 const footerHtmlFile = path.join(repoRoot, "src", "config", "FooterConfig.html");
+const previewCacheDir = path.join(
+	repoRoot,
+	"data",
+	"admin",
+	"customizer-preview-cache",
+);
+const ffmpegBinary = process.env.FIREFLY_CUSTOMIZER_FFMPEG || "/usr/bin/ffmpeg";
 
 const host = process.env.FIREFLY_CUSTOMIZER_HOST || "0.0.0.0";
 const port = Number(process.env.FIREFLY_CUSTOMIZER_PORT || "3218");
@@ -200,23 +207,88 @@ function classifyAssetPath(value) {
 	return null;
 }
 
-function buildPreviewUrl(assetPath) {
+function buildAssetUrl(assetPath) {
 	if (/^https?:\/\//i.test(assetPath)) {
 		return assetPath;
 	}
 	return `/api/asset?path=${encodeURIComponent(assetPath)}`;
 }
 
+function buildPreviewUrl(
+	assetPath,
+	assetType = classifyAssetPath(assetPath),
+) {
+	if (/^https?:\/\//i.test(assetPath)) {
+		return assetPath;
+	}
+	if (assetType === "image") {
+		return `/api/asset-preview?path=${encodeURIComponent(assetPath)}`;
+	}
+	return buildAssetUrl(assetPath);
+}
+
+function formatBytes(sizeBytes) {
+	if (!Number.isFinite(sizeBytes) || sizeBytes <= 0) {
+		return "0 B";
+	}
+
+	const units = ["B", "KB", "MB", "GB"];
+	let value = sizeBytes;
+	let index = 0;
+	while (value >= 1024 && index < units.length - 1) {
+		value /= 1024;
+		index += 1;
+	}
+	return `${value >= 10 || index === 0 ? value.toFixed(0) : value.toFixed(1)} ${units[index]}`;
+}
+
+function getAssetInfo(assetPath, assetType = classifyAssetPath(assetPath)) {
+	const rawUrl = buildAssetUrl(assetPath);
+	const previewUrl = buildPreviewUrl(assetPath, assetType);
+	const info = {
+		rawUrl,
+		previewUrl,
+		exists: null,
+		sizeBytes: null,
+		issue: "",
+	};
+
+	if (/^https?:\/\//i.test(assetPath)) {
+		info.issue = "远程资源不会经过后台本地校验";
+		return info;
+	}
+
+	const resolvedPath = resolveAssetPath(assetPath);
+	if (!resolvedPath || !fs.existsSync(resolvedPath)) {
+		info.exists = false;
+		info.issue = "路径存在于配置里，但当前仓库里找不到这个文件";
+		return info;
+	}
+
+	const stat = fs.statSync(resolvedPath);
+	info.exists = true;
+	info.sizeBytes = stat.size;
+	if (assetType === "image" && stat.size >= 2 * 1024 * 1024) {
+		info.issue = `原图较大（${formatBytes(stat.size)}），后台会自动使用缩略图预览`;
+	}
+
+	return info;
+}
+
+function createAssetRecord(trace, assetPath, assetType = classifyAssetPath(assetPath)) {
+	return {
+		trace,
+		path: assetPath,
+		type: assetType,
+		...getAssetInfo(assetPath, assetType),
+	};
+}
+
 function scanAssets(value, trace = "state", results = []) {
 	if (typeof value === "string") {
 		const assetType = classifyAssetPath(value);
 		if (assetType) {
-			results.push({
-				trace,
-				path: value,
-				type: assetType,
-				previewUrl: buildPreviewUrl(value),
-			});
+			results.push(createAssetRecord(trace, value, assetType));
 		}
 		return results;
 	}
@@ -298,6 +370,118 @@ function detectContentType(filePath) {
 		default:
 			return "application/octet-stream";
 	}
+}
+
+function getPreviewDimensions(urlObject) {
+	const clamp = (value, fallback, minValue, maxValue) => {
+		const parsed = Number.parseInt(value || "", 10);
+		if (!Number.isFinite(parsed)) return fallback;
+		return Math.min(maxValue, Math.max(minValue, parsed));
+	};
+
+	return {
+		width: clamp(urlObject.searchParams.get("w"), 640, 120, 1600),
+		height: clamp(urlObject.searchParams.get("h"), 420, 120, 1200),
+	};
+}
+
+async function getSharp() {
+	return null;
+}
+
+function serveLocalFile(
+	res,
+	filePath,
+	contentType = detectContentType(filePath),
+) {
+	const stat = fs.statSync(filePath);
+	res.writeHead(200, {
+		"Content-Type": contentType,
+		"Content-Length": stat.size,
+		"Cache-Control": "no-store",
+	});
+	fs.createReadStream(filePath).pipe(res);
+}
+
+function runProcess(binary, args, timeoutMs = 20000) {
+	return new Promise((resolve, reject) => {
+		const child = spawn(binary, args, {
+			cwd: repoRoot,
+			env: process.env,
+		});
+
+		let stdout = "";
+		let stderr = "";
+		let finished = false;
+		const timer = setTimeout(() => {
+			if (finished) return;
+			finished = true;
+			child.kill("SIGKILL");
+			reject(new Error(`${path.basename(binary)} 执行超时`));
+		}, timeoutMs);
+
+		child.stdout.on("data", (chunk) => {
+			stdout += chunk.toString();
+		});
+		child.stderr.on("data", (chunk) => {
+			stderr += chunk.toString();
+		});
+		child.on("error", (error) => {
+			if (finished) return;
+			finished = true;
+			clearTimeout(timer);
+			reject(error);
+		});
+		child.on("close", (code) => {
+			if (finished) return;
+			finished = true;
+			clearTimeout(timer);
+			if (code === 0) {
+				resolve({ stdout, stderr });
+				return;
+			}
+			reject(
+				new Error(
+					stderr.trim() ||
+						stdout.trim() ||
+						`${path.basename(binary)} 退出码 ${code}`,
+				),
+			);
+		});
+	});
+}
+
+async function ensurePreviewImage(resolvedPath, width, height) {
+	const stat = fs.statSync(resolvedPath);
+	const ext = path.extname(resolvedPath).toLowerCase();
+	if (!imageExtensions.has(ext) || ext === ".svg" || ext === ".ico") {
+		return { filePath: resolvedPath, contentType: detectContentType(resolvedPath) };
+	}
+
+	const cacheKey = crypto
+		.createHash("sha1")
+		.update(`${resolvedPath}|${stat.mtimeMs}|${stat.size}|${width}|${height}`)
+		.digest("hex");
+	const previewPath = path.join(previewCacheDir, `${cacheKey}.png`);
+
+	if (!fs.existsSync(previewPath)) {
+		ensureParentDirectory(previewPath);
+		await runProcess(ffmpegBinary, [
+			"-y",
+			"-i",
+			resolvedPath,
+			"-vf",
+			`scale=${width}:${height}:force_original_aspect_ratio=decrease`,
+			"-frames:v",
+			"1",
+			previewPath,
+		]);
+	}
+
+	return {
+		filePath: previewPath,
+		contentType: "image/png",
+	};
 }
 
 function sanitizeFilename(originalName, expectedType) {
@@ -500,7 +684,9 @@ export const server = http.createServer(async (req, res) => {
 				ok: true,
 				path: configPath,
 				type: target.type,
-				previewUrl: buildPreviewUrl(configPath),
+				rawUrl: buildAssetUrl(configPath),
+				previewUrl: buildPreviewUrl(configPath, target.type),
+				...getAssetInfo(configPath, target.type),
 			});
 			return;
 		}
@@ -523,11 +709,40 @@ export const server = http.createServer(async (req, res) => {
 				return;
 			}
 
-			res.writeHead(200, {
-				"Content-Type": detectContentType(resolvedPath),
-				"Cache-Control": "no-store",
-			});
-			fs.createReadStream(resolvedPath).pipe(res);
+			serveLocalFile(res, resolvedPath);
+			return;
+		}
+
+		if (pathname === "/api/asset-preview" && req.method === "GET") {
+			const assetPath = url.searchParams.get("path");
+			if (!assetPath) {
+				sendText(res, 400, "Missing path");
+				return;
+			}
+
+			if (/^https?:\/\//i.test(assetPath)) {
+				sendText(res, 400, "Remote assets should be loaded directly.");
+				return;
+			}
+
+			const resolvedPath = resolveAssetPath(assetPath);
+			if (!resolvedPath || !fs.existsSync(resolvedPath)) {
+				sendText(res, 404, "Asset not found");
+				return;
+			}
+
+			const { width, height } = getPreviewDimensions(url);
+			try {
+				const preview = await ensurePreviewImage(resolvedPath, width, height);
+				serveLocalFile(res, preview.filePath, preview.contentType);
+			} catch (error) {
+				console.warn(
+					`[firefly-customizer] preview fallback for ${assetPath}: ${
+						error instanceof Error ? error.message : String(error)
+					}`,
+				);
+				serveLocalFile(res, resolvedPath);
+			}
 			return;
 		}
 
