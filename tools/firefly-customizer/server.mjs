@@ -337,7 +337,11 @@ function buildStateResponse() {
 			repoRoot,
 			stateFile,
 			footerHtmlFile,
-			publishCommands: ["firefly-check", "firefly-build", "firefly-publish"],
+			publishCommands: [
+				"firefly-check",
+				"firefly-build",
+				"tools/firefly-customizer/publish.sh",
+			],
 		},
 	};
 }
@@ -538,8 +542,8 @@ export const server = http.createServer(async (req, res) => {
 				{ label: "firefly-check", command: "firefly-check" },
 				{ label: "firefly-build", command: "firefly-build" },
 				{
-					label: "firefly-publish",
-					command: `firefly-publish ${JSON.stringify(message)}`,
+					label: "firefly-customizer-publish",
+					command: `sh tools/firefly-customizer/publish.sh ${JSON.stringify(message)}`,
 				},
 			];
 
