@@ -526,12 +526,21 @@ function buildStateResponse() {
 				"firefly-build",
 				"tools/firefly-customizer/publish.sh",
 			],
+			publishModes: {
+				quick: ["tools/firefly-customizer/publish.sh"],
+				full: [
+					"firefly-check",
+					"firefly-build",
+					"tools/firefly-customizer/publish.sh",
+				],
+			},
 		},
 	};
 }
 
 function runShellCommand(command) {
 	return new Promise((resolve) => {
+		const startedAt = Date.now();
 		const child = spawn("/bin/sh", ["-lc", command], {
 			cwd: repoRoot,
 			env: process.env,
@@ -551,9 +560,40 @@ function runShellCommand(command) {
 				code,
 				stdout,
 				stderr,
+				elapsedMs: Date.now() - startedAt,
 			});
 		});
 	});
+}
+
+function buildPublishPlan(mode, message) {
+	const normalizedMode = mode === "full" ? "full" : "quick";
+
+	if (normalizedMode === "full") {
+		return {
+			mode: normalizedMode,
+			message: "完整检查、构建和发布都已经完成。",
+			commands: [
+				{ label: "firefly-check", command: "firefly-check" },
+				{ label: "firefly-build", command: "firefly-build" },
+				{
+					label: "firefly-customizer-publish",
+					command: `sh tools/firefly-customizer/publish.sh ${JSON.stringify(message)}`,
+				},
+			],
+		};
+	}
+
+	return {
+		mode: normalizedMode,
+		message: "已经推送到 GitHub，GitHub Pages 会自动继续构建和发布。",
+		commands: [
+			{
+				label: "firefly-customizer-publish",
+				command: `sh tools/firefly-customizer/publish.sh ${JSON.stringify(message)}`,
+			},
+		],
+	};
 }
 
 async function servePublicFile(res, pathname) {
@@ -752,15 +792,8 @@ export const server = http.createServer(async (req, res) => {
 				typeof body.message === "string" && body.message.trim()
 					? body.message.trim()
 					: "chore: publish admin customizer update";
-
-			const commands = [
-				{ label: "firefly-check", command: "firefly-check" },
-				{ label: "firefly-build", command: "firefly-build" },
-				{
-					label: "firefly-customizer-publish",
-					command: `sh tools/firefly-customizer/publish.sh ${JSON.stringify(message)}`,
-				},
-			];
+			const plan = buildPublishPlan(body.mode, message);
+			const commands = plan.commands;
 
 			const logs = [];
 			for (const item of commands) {
@@ -781,7 +814,8 @@ export const server = http.createServer(async (req, res) => {
 
 			sendJson(res, 200, {
 				ok: true,
-				message: "检查、构建和发布都已经完成。",
+				mode: plan.mode,
+				message: plan.message,
 				logs,
 				...buildStateResponse(),
 			});

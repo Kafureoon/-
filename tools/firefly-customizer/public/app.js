@@ -36,6 +36,7 @@ const state = {
 	loading: false,
 	saving: false,
 	publishing: false,
+	publishingMode: "",
 	state: {},
 	footerHtml: "",
 	info: null,
@@ -890,21 +891,32 @@ function renderAdvancedPanel() {
 }
 
 function renderPublishPanel() {
+	const busy = state.saving || state.publishing;
+	const quickPublishing = state.publishing && state.publishingMode === "quick";
+	const fullPublishing = state.publishing && state.publishingMode === "full";
+	const publishDescription = quickPublishing
+		? "正在快速推送到 GitHub，后续构建会交给 GitHub Pages。"
+		: fullPublishing
+			? "正在服务器上执行 firefly-check、firefly-build 和推送。"
+			: "快速发布只负责提交并推送，完整检查发布会额外在服务器上执行检查和构建。";
+
 	return `
 		<section class="panel">
 			<div class="panel-header">
 				<div>
 					<h2>保存与发布</h2>
-					<p class="subtle">保存只会写入仓库工作区，发布会执行检查、构建和推送，适合确认无误后再点。</p>
+					<p class="subtle">保存只会写入仓库工作区。快速发布会直接推送到 GitHub，让 GitHub Pages 自动构建；完整检查发布会先在服务器上跑检查和构建，所以会慢很多。</p>
 				</div>
 			</div>
 			<div class="field">
 				<label>发布提交信息</label>
-				<input id="publish-message" value="${escapeHtml(state.publishMessage)}" />
+				<input id="publish-message" value="${escapeHtml(state.publishMessage)}" ${busy ? "disabled" : ""} />
 			</div>
+			<div class="helper-line">${escapeHtml(publishDescription)}</div>
 			<div class="inline-actions" style="margin-top: 16px;">
-				<button class="button secondary" type="button" id="save-button">${state.saving ? "保存中…" : "保存配置"}</button>
-				<button class="button warn" type="button" id="publish-button">${state.publishing ? "发布中…" : "保存并发布"}</button>
+				<button class="button secondary" type="button" id="save-button" ${busy ? "disabled" : ""}>${state.saving ? "保存中…" : "保存配置"}</button>
+				<button class="button warn" type="button" id="publish-quick-button" ${busy ? "disabled" : ""}>${quickPublishing ? "快速发布中…" : "快速发布"}</button>
+				<button class="button secondary" type="button" id="publish-full-button" ${busy ? "disabled" : ""}>${fullPublishing ? "完整检查中…" : "完整检查发布"}</button>
 			</div>
 			<div class="status-box ${escapeHtml(state.statusTone)}" id="status-box" style="margin-top: 16px;">${escapeHtml(state.statusText)}</div>
 		</section>
@@ -917,8 +929,11 @@ function bindDashboardEvents() {
 	document.querySelector("#save-button")?.addEventListener("click", () => {
 		void saveState();
 	});
-	document.querySelector("#publish-button")?.addEventListener("click", () => {
-		void publishState();
+	document.querySelector("#publish-quick-button")?.addEventListener("click", () => {
+		void publishState("quick");
+	});
+	document.querySelector("#publish-full-button")?.addEventListener("click", () => {
+		void publishState("full");
 	});
 	document.querySelector("#publish-message")?.addEventListener("change", (event) => {
 		state.publishMessage = event.target.value;
@@ -1205,28 +1220,41 @@ async function saveState() {
 function formatPublishLogs(logs) {
 	return (logs || [])
 		.map((item) => {
+			const elapsed =
+				Number.isFinite(item.elapsedMs) && item.elapsedMs >= 0
+					? `, ${Math.max(item.elapsedMs / 1000, 0.01).toFixed(2)}s`
+					: "";
 			const stdout = item.stdout?.trim() ? `\n[stdout]\n${item.stdout.trim()}` : "";
 			const stderr = item.stderr?.trim() ? `\n[stderr]\n${item.stderr.trim()}` : "";
-			return `# ${item.label} (exit ${item.code})${stdout}${stderr}`;
+			return `# ${item.label} (exit ${item.code}${elapsed})${stdout}${stderr}`;
 		})
 		.join("\n\n");
 }
 
-async function publishState() {
+async function publishState(mode = "quick") {
+	const normalizedMode = mode === "full" ? "full" : "quick";
 	try {
 		state.publishing = true;
+		state.publishingMode = normalizedMode;
+		renderApp();
 		await saveState();
-		setStatus("正在执行 firefly-check / firefly-build / firefly-publish ……");
+		setStatus(
+			normalizedMode === "full"
+				? "正在执行完整检查发布：firefly-check / firefly-build / firefly-publish ……"
+				: "正在快速推送到 GitHub……后续构建会交给 GitHub Pages。",
+		);
 		const payload = await requestJson("/api/publish", {
 			method: "POST",
 			body: JSON.stringify({
 				message: state.publishMessage,
+				mode: normalizedMode,
 			}),
 		});
 		state.state = cloneValue(payload.state || state.state);
 		state.footerHtml = payload.footerHtml || state.footerHtml;
 		state.info = payload.info || state.info;
 		state.publishing = false;
+		state.publishingMode = "";
 		const logsText = formatPublishLogs(payload.logs);
 		setStatus(
 			`${payload.message || "发布完成。"}${logsText ? `\n\n${logsText}` : ""}`,
@@ -1235,8 +1263,9 @@ async function publishState() {
 		renderApp();
 	} catch (error) {
 		state.publishing = false;
+		state.publishingMode = "";
 		setStatus(error instanceof Error ? error.message : "发布失败。", "warn-text");
-		renderStatusBox();
+		renderApp();
 	}
 }
 

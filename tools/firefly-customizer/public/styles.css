@@ -116,6 +116,12 @@ button {
   color: #fff6ee;
 }
 
+.button[disabled] {
+  opacity: 0.58;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
 .meta-strip {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
