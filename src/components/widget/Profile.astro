@@ -13,7 +13,9 @@ const resolveProfileLink = (href: string) =>
 	isInternalProfileLink(href) ? url(href) : href;
 
 const resolveProfileTarget = (href: string) =>
-	isInternalProfileLink(href) || href.startsWith("mailto:") ? undefined : "_blank";
+	isInternalProfileLink(href) || href.startsWith("mailto:")
+		? undefined
+		: "_blank";
 ---
 
 <div class="card-base p-3">
