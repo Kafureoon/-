@@ -24,7 +24,8 @@ function getGithubPagesDefaults() {
 	const [owner, repo] = repository.split("/");
 	if (!owner || !repo) return undefined;
 
-	const isUserOrOrgSite = repo.toLowerCase() === `${owner.toLowerCase()}.github.io`;
+	const isUserOrOrgSite =
+		repo.toLowerCase() === `${owner.toLowerCase()}.github.io`;
 	const basePath = isUserOrOrgSite ? "/" : `/${repo}/`;
 	const siteUrl = `https://${owner}.github.io${isUserOrOrgSite ? "" : `/${repo}`}`;
 
