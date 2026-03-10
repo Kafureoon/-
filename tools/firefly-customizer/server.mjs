@@ -594,7 +594,5 @@ server.listen(port, host, () => {
 	console.log(
 		`[firefly-customizer] listening on http://${host}:${port} (repo: ${repoRoot})`,
 	);
-	console.log(
-		`[firefly-customizer] login with ${adminUsername} / ${adminPassword}`,
-	);
+	console.log(`[firefly-customizer] admin user: ${adminUsername}`);
 });
