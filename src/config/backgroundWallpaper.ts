@@ -1,6 +1,7 @@
 import type { BackgroundWallpaperConfig } from "@/types/config";
+import { loadCustomizerSection } from "./customizerState";
 
-export const backgroundWallpaper: BackgroundWallpaperConfig = {
+const defaultBackgroundWallpaper: BackgroundWallpaperConfig = {
 	// 壁纸模式："banner" 横幅壁纸，"overlay" 全屏透明，"none" 纯色背景无壁纸
 	mode: "banner",
 	// 是否允许用户通过导航栏切换壁纸模式，设为false可提升性能（只渲染当前模式）
@@ -158,3 +159,9 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		cardOpacity: 0.5,
 	},
 };
+
+export const backgroundWallpaper: BackgroundWallpaperConfig =
+	loadCustomizerSection(
+		"backgroundWallpaper",
+		defaultBackgroundWallpaper,
+	);

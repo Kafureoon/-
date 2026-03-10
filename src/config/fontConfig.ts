@@ -1,5 +1,7 @@
+import { loadCustomizerSection } from "./customizerState";
+
 // 字体配置
-export const fontConfig = {
+const defaultFontConfig = {
 	// 是否启用自定义字体功能
 	enable: false,
 	// 是否预加载字体文件
@@ -81,3 +83,5 @@ export const fontConfig = {
 		"sans-serif",
 	],
 };
+
+export const fontConfig = loadCustomizerSection("fontConfig", defaultFontConfig);

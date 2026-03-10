@@ -5,6 +5,7 @@ import {
 	type NavBarSearchConfig,
 	NavBarSearchMethod,
 } from "../types/config";
+import { loadCustomizerSection } from "./customizerState";
 import { siteConfig } from "./siteConfig";
 
 // 根据页面开关动态生成导航栏配置
@@ -92,4 +93,7 @@ export const navBarSearchConfig: NavBarSearchConfig = {
 	method: NavBarSearchMethod.PageFind,
 };
 
-export const navBarConfig: NavBarConfig = getDynamicNavBarConfig();
+export const navBarConfig: NavBarConfig = loadCustomizerSection(
+	"navBarConfig",
+	getDynamicNavBarConfig(),
+);

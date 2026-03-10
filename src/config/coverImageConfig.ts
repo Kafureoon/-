@@ -1,4 +1,5 @@
 import type { CoverImageConfig } from "../types/config";
+import { loadCustomizerSection } from "./customizerState";
 
 /**
  * 文章封面图配置
@@ -15,7 +16,7 @@ import type { CoverImageConfig } from "../types/config";
  * image: "api"
  * ---
  */
-export const coverImageConfig: CoverImageConfig = {
+const defaultCoverImageConfig: CoverImageConfig = {
 	// 是否在文章详情页显示封面图
 	enableInPost: true,
 
@@ -34,3 +35,8 @@ export const coverImageConfig: CoverImageConfig = {
 		showLoading: false,
 	},
 };
+
+export const coverImageConfig: CoverImageConfig = loadCustomizerSection(
+	"coverImageConfig",
+	defaultCoverImageConfig,
+);

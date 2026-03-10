@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/types/config";
+import { loadCustomizerSection } from "./customizerState";
 import { resolveSiteUrl } from "./deployConfig";
 import { fontConfig } from "./fontConfig";
 
@@ -6,7 +7,7 @@ import { fontConfig } from "./fontConfig";
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru'。
 const SITE_LANG = "zh_CN";
 
-export const siteConfig: SiteConfig = {
+const defaultSiteConfig: SiteConfig = {
 	// 站点标题
 	title: "Firefly",
 
@@ -195,3 +196,8 @@ export const siteConfig: SiteConfig = {
 	// 站点语言，在本配置文件顶部SITE_LANG定义
 	lang: SITE_LANG,
 };
+
+export const siteConfig: SiteConfig = loadCustomizerSection(
+	"siteConfig",
+	defaultSiteConfig,
+);

@@ -1,7 +1,8 @@
 import type { Live2DModelConfig, SpineModelConfig } from "../types/config";
+import { loadCustomizerSection } from "./customizerState";
 
 // Spine 看板娘配置
-export const spineModelConfig: SpineModelConfig = {
+const defaultSpineModelConfig: SpineModelConfig = {
 	// Spine 看板娘开关
 	enable: false,
 
@@ -84,7 +85,7 @@ export const spineModelConfig: SpineModelConfig = {
 };
 
 // Live2D 看板娘配置
-export const live2dModelConfig: Live2DModelConfig = {
+const defaultLive2dModelConfig: Live2DModelConfig = {
 	// Live2D 看板娘开关
 	enable: false,
 	// Live2D模型配置
@@ -136,3 +137,13 @@ export const live2dModelConfig: Live2DModelConfig = {
 		mobileBreakpoint: 768,
 	},
 };
+
+export const spineModelConfig: SpineModelConfig = loadCustomizerSection(
+	"spineModelConfig",
+	defaultSpineModelConfig,
+);
+
+export const live2dModelConfig: Live2DModelConfig = loadCustomizerSection(
+	"live2dModelConfig",
+	defaultLive2dModelConfig,
+);

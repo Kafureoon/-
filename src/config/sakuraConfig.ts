@@ -1,6 +1,7 @@
 import type { SakuraConfig } from "../types/config";
+import { loadCustomizerSection } from "./customizerState";
 
-export const sakuraConfig: SakuraConfig = {
+const defaultSakuraConfig: SakuraConfig = {
 	// 是否启用樱花特效
 	enable: false,
 
@@ -51,3 +52,8 @@ export const sakuraConfig: SakuraConfig = {
 	// 层级，确保樱花在合适的层级显示
 	zIndex: 100,
 };
+
+export const sakuraConfig: SakuraConfig = loadCustomizerSection(
+	"sakuraConfig",
+	defaultSakuraConfig,
+);

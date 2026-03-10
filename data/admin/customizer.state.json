@@ -1,0 +1,445 @@
+{
+  "siteConfig": {
+    "title": "Firefly",
+    "subtitle": "Demo site",
+    "description": "Firefly 是一款基于 Astro 框架和 Fuwari 模板开发的清新美观且现代化个人博客主题模板，专为技术爱好者和内容创作者设计。",
+    "themeColor": {
+      "hue": 165,
+      "fixed": false,
+      "defaultMode": "system"
+    },
+    "pageWidth": 100,
+    "card": {
+      "border": false,
+      "followTheme": false
+    },
+    "navbar": {
+      "logo": {
+        "type": "image",
+        "value": "assets/images/firefly.png",
+        "alt": "🍀"
+      },
+      "title": "Firefly",
+      "widthFull": false,
+      "menuAlign": "center",
+      "followTheme": false
+    }
+  },
+  "profileConfig": {
+    "avatar": "assets/images/avatar.avif",
+    "name": "Firefly",
+    "bio": "Hello, I'm Firefly.",
+    "links": [
+      {
+        "name": "qq",
+        "icon": "fa7-brands:qq",
+        "url": "https://qm.qq.com/q/ZGsFa8qX2G",
+        "showName": false
+      },
+      {
+        "name": "GitHub",
+        "icon": "fa7-brands:github",
+        "url": "https://github.com/CuteLeaf",
+        "showName": false
+      },
+      {
+        "name": "Email",
+        "icon": "fa7-solid:envelope",
+        "url": "mailto:xiaye@msn.com",
+        "showName": false
+      },
+      {
+        "name": "RSS",
+        "icon": "fa7-solid:rss",
+        "url": "/rss/",
+        "showName": false
+      }
+    ]
+  },
+  "backgroundWallpaper": {
+    "mode": "banner",
+    "switchable": true,
+    "src": {
+      "desktop": [
+        "assets/images/DesktopWallpaper/d1.avif",
+        "assets/images/DesktopWallpaper/d2.avif",
+        "assets/images/DesktopWallpaper/d3.avif",
+        "assets/images/DesktopWallpaper/d4.avif",
+        "assets/images/DesktopWallpaper/d5.avif",
+        "assets/images/DesktopWallpaper/d6.avif"
+      ],
+      "mobile": [
+        "assets/images/MobileWallpaper/m1.avif",
+        "assets/images/MobileWallpaper/m2.avif",
+        "assets/images/MobileWallpaper/m3.avif",
+        "assets/images/MobileWallpaper/m4.avif",
+        "assets/images/MobileWallpaper/m5.avif",
+        "assets/images/MobileWallpaper/m6.avif"
+      ]
+    },
+    "banner": {
+      "position": "0% 20%",
+      "homeText": {
+        "enable": true,
+        "switchable": true,
+        "title": "Lovely firefly!",
+        "titleSize": "3.8rem",
+        "subtitle": [
+          "In Reddened Chrysalis, I Once Rest",
+          "From Shattered Sky, I Free Fall",
+          "Amidst Silenced Stars, I Deep Sleep",
+          "Upon Lighted Fyrefly, I Soon Gaze",
+          "From Undreamt Night, I Thence Shine",
+          "In Finalized Morrow, I Full Bloom"
+        ],
+        "subtitleSize": "1.5rem",
+        "typewriter": {
+          "enable": true,
+          "speed": 100,
+          "deleteSpeed": 50,
+          "pauseTime": 2000
+        }
+      },
+      "credit": {
+        "enable": {
+          "desktop": true,
+          "mobile": true
+        },
+        "text": {
+          "desktop": "Pixiv - 晚晚喵",
+          "mobile": "Pixiv - KiraraShss"
+        },
+        "url": {
+          "desktop": "https://www.pixiv.net/users/108801776",
+          "mobile": "https://www.pixiv.net/users/42715864"
+        }
+      },
+      "navbar": {
+        "transparentMode": "semifull",
+        "enableBlur": true,
+        "blur": 3
+      },
+      "waves": {
+        "enable": {
+          "desktop": true,
+          "mobile": true
+        },
+        "switchable": true
+      }
+    },
+    "overlay": {
+      "switchable": {
+        "opacity": true,
+        "blur": true,
+        "cardOpacity": true
+      },
+      "zIndex": -1,
+      "opacity": 0.8,
+      "blur": 10,
+      "cardOpacity": 0.5
+    }
+  },
+  "musicPlayerConfig": {
+    "showInNavbar": true,
+    "mode": "meting",
+    "volume": 0.7,
+    "playMode": "list",
+    "showLyrics": true,
+    "meting": {
+      "api": "https://api.i-meto.com/meting/api?server=:server&type=:type&id=:id&r=:r",
+      "server": "netease",
+      "type": "playlist",
+      "id": "10046455237",
+      "auth": "",
+      "fallbackApis": [
+        "https://api.injahow.cn/meting/?server=:server&type=:type&id=:id",
+        "https://api.moeyao.cn/meting/?server=:server&type=:type&id=:id"
+      ]
+    },
+    "local": {
+      "playlist": [
+        {
+          "name": "使一颗心免于哀伤",
+          "artist": "知更鸟 / HOYO-MiX / Chevy",
+          "url": "/assets/music/使一颗心免于哀伤-哼唱.mp3",
+          "cover": "/assets/music/cover/109951169585655912.webp",
+          "lrc": ""
+        }
+      ]
+    }
+  },
+  "announcementConfig": {
+    "title": "公告",
+    "content": "欢迎来到我的博客！这是一则示例公告。",
+    "closable": true,
+    "link": {
+      "enable": true,
+      "text": "了解更多",
+      "url": "/about/",
+      "external": false
+    }
+  },
+  "footerConfig": {
+    "enable": false
+  },
+  "footerHtml": "",
+  "navBarConfig": {
+    "links": [
+      0,
+      1,
+      3,
+      5,
+      {
+        "name": "我的",
+        "url": "/my/",
+        "icon": "material-symbols:person",
+        "children": [
+          7,
+          6
+        ]
+      },
+      {
+        "name": "关于",
+        "url": "/content/",
+        "icon": "material-symbols:info",
+        "children": [
+          4,
+          2
+        ]
+      },
+      {
+        "name": "链接",
+        "url": "/links/",
+        "icon": "material-symbols:link",
+        "children": [
+          {
+            "name": "GitHub",
+            "url": "https://github.com/CuteLeaf/Firefly",
+            "external": true,
+            "icon": "fa7-brands:github"
+          },
+          {
+            "name": "Gitee",
+            "url": "https://gitee.com/CuteLeaf/Firefly",
+            "external": true,
+            "icon": "fa7-brands:gitee"
+          },
+          {
+            "name": "QQ交流群",
+            "url": "https://qm.qq.com/q/ZGsFa8qX2G",
+            "external": true,
+            "icon": "fa7-brands:qq"
+          }
+        ]
+      }
+    ]
+  },
+  "sakuraConfig": {
+    "enable": false,
+    "sakuraNum": 21,
+    "limitTimes": -1,
+    "size": {
+      "min": 0.5,
+      "max": 1.1
+    },
+    "opacity": {
+      "min": 0.3,
+      "max": 0.9
+    },
+    "speed": {
+      "horizontal": {
+        "min": -1.7,
+        "max": -1.2
+      },
+      "vertical": {
+        "min": 1.5,
+        "max": 2.2
+      },
+      "rotation": 0.03,
+      "fadeSpeed": 0.03
+    },
+    "zIndex": 100
+  },
+  "spineModelConfig": {
+    "enable": false,
+    "model": {
+      "path": "/pio/models/spine/firefly/1310.json",
+      "scale": 1,
+      "x": 0,
+      "y": 0
+    },
+    "position": {
+      "corner": "bottom-left",
+      "offsetX": 0,
+      "offsetY": 0
+    },
+    "size": {
+      "width": 135,
+      "height": 165
+    },
+    "interactive": {
+      "enabled": true,
+      "clickAnimations": [
+        "emoji_0",
+        "emoji_1",
+        "emoji_2",
+        "emoji_3",
+        "emoji_4",
+        "emoji_5",
+        "emoji_6"
+      ],
+      "clickMessages": [
+        "你好呀！我是流萤~",
+        "今天也要加油呀！",
+        "想要一起去看星空吗？",
+        "记得要好好休息呢~"
+      ],
+      "messageDisplayTime": 3000,
+      "idleAnimations": [
+        "idle",
+        "emoji_0",
+        "emoji_1",
+        "emoji_3",
+        "emoji_4"
+      ],
+      "idleInterval": 8000
+    },
+    "responsive": {
+      "hideOnMobile": true,
+      "mobileBreakpoint": 768
+    },
+    "zIndex": 1000,
+    "opacity": 1
+  },
+  "live2dModelConfig": {
+    "enable": false,
+    "model": {
+      "path": "/pio/models/live2d/snow_miku/model.json"
+    },
+    "position": {
+      "corner": "bottom-left",
+      "offsetX": 0,
+      "offsetY": 0
+    },
+    "size": {
+      "width": 135,
+      "height": 165
+    },
+    "interactive": {
+      "enabled": true,
+      "clickMessages": [
+        "你好！我是 Miku~",
+        "有什么需要帮助的吗？",
+        "今天天气真不错呢！"
+      ],
+      "messageDisplayTime": 3000
+    },
+    "responsive": {
+      "hideOnMobile": true,
+      "mobileBreakpoint": 768
+    }
+  },
+  "coverImageConfig": {
+    "enableInPost": true,
+    "randomCoverImage": {
+      "enable": false,
+      "apis": [
+        "https://t.alcy.cc/pc",
+        "https://www.dmoe.cc/random.php",
+        "https://uapis.cn/api/v1/random/image?category=acg&type=pc"
+      ],
+      "fallback": "assets/images/cover.avif",
+      "showLoading": false
+    }
+  },
+  "licenseConfig": {
+    "enable": true,
+    "name": "CC BY-NC-SA 4.0",
+    "url": "https://creativecommons.org/licenses/by-nc-sa/4.0/"
+  },
+  "fontConfig": {
+    "enable": false,
+    "preload": true,
+    "selected": [
+      "misans-regular"
+    ]
+  },
+  "sponsorConfig": {
+    "title": "",
+    "description": "",
+    "usage": "您的赞助将用于服务器维护、内容创作和功能开发，帮助我持续提供优质内容。",
+    "showSponsorsList": true,
+    "showButtonInPost": true,
+    "methods": [
+      {
+        "name": "支付宝",
+        "icon": "fa7-brands:alipay",
+        "qrCode": "/assets/images/sponsor/alipay.png",
+        "link": "",
+        "description": "使用支付宝扫码赞助",
+        "enabled": true
+      },
+      {
+        "name": "微信",
+        "icon": "fa7-brands:weixin",
+        "qrCode": "/assets/images/sponsor/wechat.png",
+        "link": "",
+        "description": "使用微信扫码赞助",
+        "enabled": true
+      },
+      {
+        "name": "ko-fi",
+        "icon": "simple-icons:kofi",
+        "qrCode": "",
+        "link": "https://ko-fi.com/cuteleaf",
+        "description": "Buy a Coffee for Firefly",
+        "enabled": true
+      }
+    ],
+    "sponsors": [
+      {
+        "name": "夏叶",
+        "amount": "50",
+        "date": "2025-10-01"
+      },
+      {
+        "name": "匿名用户",
+        "amount": "20",
+        "date": "2025-10-01"
+      }
+    ]
+  },
+  "adConfig": {
+    "adConfig1": {
+      "image": {
+        "src": "assets/images/cover.avif",
+        "alt": "广告横幅",
+        "link": "#",
+        "external": true
+      },
+      "closable": true,
+      "displayCount": -1,
+      "padding": {
+        "all": "0"
+      }
+    },
+    "adConfig2": {
+      "title": "支持博主",
+      "content": "如果您觉得本站内容对您有帮助，欢迎支持我的创作。",
+      "image": {
+        "src": "assets/images/cover.avif",
+        "alt": "支持博主",
+        "link": "about/",
+        "external": false
+      },
+      "link": {
+        "text": "支持一下",
+        "url": "about/",
+        "external": false
+      },
+      "closable": true,
+      "displayCount": -1,
+      "padding": {}
+    }
+  }
+}

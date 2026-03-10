@@ -1,9 +1,10 @@
 import type { AdConfig } from "../types/config";
+import { loadCustomizerSection } from "./customizerState";
 
 // 这里只是配置广告内容，如果要开关请在sidebarConfig.ts中控制侧边栏组件的的启用组件即可
 
 // 广告配置1 - 纯图片广告（无边距）
-export const adConfig1: AdConfig = {
+const defaultAdConfig1: AdConfig = {
 	image: {
 		src: "assets/images/cover.avif",
 		alt: "广告横幅",
@@ -40,7 +41,7 @@ export const adConfig1: AdConfig = {
 };
 
 // 广告配置2 - 完整内容广告
-export const adConfig2: AdConfig = {
+const defaultAdConfig2: AdConfig = {
 	title: "支持博主",
 	content:
 		"如果您觉得本站内容对您有帮助，欢迎支持我们的创作！您的支持是我们持续更新的动力。",
@@ -61,3 +62,10 @@ export const adConfig2: AdConfig = {
 		// all: "1rem",
 	},
 };
+
+const { adConfig1, adConfig2 } = loadCustomizerSection("adConfig", {
+	adConfig1: defaultAdConfig1,
+	adConfig2: defaultAdConfig2,
+});
+
+export { adConfig1, adConfig2 };

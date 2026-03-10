@@ -1,6 +1,7 @@
 import type { SponsorConfig } from "../types/config";
+import { loadCustomizerSection } from "./customizerState";
 
-export const sponsorConfig: SponsorConfig = {
+const defaultSponsorConfig: SponsorConfig = {
 	// 页面标题，如果留空则使用 i18n 中的翻译
 	title: "",
 
@@ -71,3 +72,8 @@ export const sponsorConfig: SponsorConfig = {
 		},
 	],
 };
+
+export const sponsorConfig: SponsorConfig = loadCustomizerSection(
+	"sponsorConfig",
+	defaultSponsorConfig,
+);
