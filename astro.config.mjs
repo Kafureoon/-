@@ -17,7 +17,7 @@ import remarkDirective from "remark-directive"; /* Handle directives */
 import remarkMath from "remark-math";
 import rehypeCallouts from "rehype-callouts";
 import remarkSectionize from "remark-sectionize";
-import { expressiveCodeConfig, siteConfig } from "./src/config";
+import { deployBasePath, expressiveCodeConfig, siteConfig } from "./src/config";
 import { i18n } from "./src/i18n/translation";
 import I18nKey from "./src/i18n/i18nKey";
 import { pluginLanguageBadge } from "expressive-code-language-badge"; /* Language Badge */
@@ -38,7 +38,7 @@ import { remarkImageGrid } from "./src/plugins/remark-image-grid.js";
 export default defineConfig({
 	site: siteConfig.site_url,
 
-	base: "/",
+	base: deployBasePath,
 	trailingSlash: "always",
 
 	// 图像优化配置

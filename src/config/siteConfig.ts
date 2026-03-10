@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/types/config";
+import { resolveSiteUrl } from "./deployConfig";
 import { fontConfig } from "./fontConfig";
 
 // 定义站点语言
@@ -13,7 +14,7 @@ export const siteConfig: SiteConfig = {
 	subtitle: "Demo site",
 
 	// 站点 URL
-	site_url: "https://firefly.cuteleaf.cn",
+	site_url: resolveSiteUrl("https://firefly.cuteleaf.cn"),
 
 	// 站点描述
 	description:
