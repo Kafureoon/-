@@ -3,6 +3,17 @@ import { Icon } from "astro-icon/components";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
 import { profileConfig } from "@/config/profileConfig";
 import { url } from "@/utils/url-utils";
+
+const isInternalProfileLink = (href: string) =>
+	!href.startsWith("mailto:") &&
+	!href.startsWith("//") &&
+	!/^[a-zA-Z][a-zA-Z\d+\-.]*:/.test(href);
+
+const resolveProfileLink = (href: string) =>
+	isInternalProfileLink(href) ? url(href) : href;
+
+const resolveProfileTarget = (href: string) =>
+	isInternalProfileLink(href) || href.startsWith("mailto:") ? undefined : "_blank";
 ---
 
 <div class="card-base p-3">
@@ -71,7 +82,7 @@ import { url } from "@/utils/url-utils";
                             {showName && item.name}
                         </a>
                     } else {
-                        return <a rel="me" aria-label={item.name} href={item.url} target="_blank" class={className}>
+                        return <a rel="me" aria-label={item.name} href={resolveProfileLink(item.url)} target={resolveProfileTarget(item.url)} class={className}>
                             <Icon name={item.icon} class="text-[1.5rem]"></Icon>
                             {showName && item.name}
                         </a>
@@ -98,7 +109,7 @@ import { url } from "@/utils/url-utils";
                             {item.name}
                         </a>
                     } else {
-                        return <a rel="me" aria-label={item.name} href={item.url} target="_blank"
+                        return <a rel="me" aria-label={item.name} href={resolveProfileLink(item.url)} target={resolveProfileTarget(item.url)}
                                             class="btn-regular rounded-lg h-10 gap-2 px-3 font-bold active:scale-95">
                                 <Icon name={item.icon} class="text-[1.5rem]"></Icon>
                                 {item.name}
