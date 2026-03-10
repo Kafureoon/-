@@ -66,7 +66,7 @@ const rssUrl = new URL(url("rss.xml"), Astro.site).toString();
                 {recentPosts.map((post) => (
                     <article class="bg-(--card-bg) rounded-xl p-4 border border-(--line-divider) hover:border-(--primary) transition-all duration-300">
                         <h3 class="text-lg font-semibold text-90 mb-2 hover:text-(--primary) transition-colors">
-                            <a href={`/posts/${post.id}/`} class="hover:underline">
+                            <a href={url(`/posts/${post.id}/`)} class="hover:underline">
                                 {post.data.title}
                             </a>
                         </h3>
