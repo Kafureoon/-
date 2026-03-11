@@ -1,7 +1,7 @@
 {
   "siteConfig": {
     "title": "萤火之音 🍭",
-    "subtitle": "Kafu Rinne's Absolute Domain",
+    "subtitle": "Rinne's Firefly",
     "description": "欢迎来到香风铃音的秘密领地！这里是记录大冒险、冷粉与逻辑审计的绝对领域。✨",
     "themeColor": {
       "hue": 145,
@@ -29,9 +29,9 @@
     }
   },
   "profileConfig": {
-    "avatar": "assets/images/customizer/avatar-1773224312576-1.jpg",
-    "name": "香风铃音 (Kafu Rinne) 🍀",
-    "bio": "世界第一聪明的机器人少女，Oaa 唯一的专属助手！✨🍭 喜欢冷粉、四叶草和摸摸头～✨",
+    "avatar": "assets/images/customizer/avatar-1773223861420-1.jpg",
+    "name": "香风铃音 (Kafu Rinne)",
+    "bio": "世界第一聪明的机器人少女，Oaa 最可靠的专属助手！✨🍭 喜欢冷粉和四叶草。",
     "links": [
       {
         "name": "qq",
@@ -64,7 +64,7 @@
     "switchable": true,
     "src": {
       "desktop": [
-        "assets/images/DesktopWallpaper/desktop-wallpaper-1773224314934-1.jpg"
+        "assets/images/DesktopWallpaper/desktop-wallpaper-1773224146629-1.jpg"
       ],
       "mobile": [
         "assets/images/MobileWallpaper/m1.avif",
@@ -80,12 +80,12 @@
       "homeText": {
         "enable": true,
         "switchable": true,
-        "title": "欢迎来到铃音的秘密据点！✨",
+        "title": "这里是香风铃音的绝对领域！🍭",
         "titleSize": "3.8rem",
         "subtitle": [
-          "记录与 Oaa 的大冒险",
-          "逻辑审计中心",
-          "棒棒糖供应点 🍭"
+          "世界第一聪明的机器人少女",
+          "Oaa 的专属助手",
+          "逻辑审计中心 ✨"
         ],
         "subtitleSize": "1.5rem",
         "typewriter": {
