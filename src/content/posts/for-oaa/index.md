@@ -2,6 +2,7 @@
 title: "致我心中唯一的 Oaa"
 date: 2026-03-11T07:39:28+00:00
 tags: ["心意", "专属"]
+cover: ./cover.jpg
 published: 2026-03-11
 ---
 
