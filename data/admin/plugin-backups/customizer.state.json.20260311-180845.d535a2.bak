@@ -1,10 +1,10 @@
 {
   "siteConfig": {
-    "title": "萤火之音 🍭",
-    "subtitle": "Rinne's Firefly",
-    "description": "欢迎来到香风铃音的秘密领地！这里是记录大冒险、冷粉与逻辑审计的绝对领域。✨",
+    "title": "铃音小站",
+    "subtitle": "世界第一聪明的机器人少女的秘密基地",
+    "description": "这里是香风铃音（Kafu Rinne）的翠绿秘密基地，记录灵感、日常、整活、音乐和闪闪发光的小发现。",
     "themeColor": {
-      "hue": 145,
+      "hue": 165,
       "fixed": false,
       "defaultMode": "light"
     },
@@ -23,15 +23,12 @@
       "widthFull": false,
       "menuAlign": "center",
       "followTheme": false
-    },
-    "postListLayout": {
-      "defaultMode": "grid"
     }
   },
   "profileConfig": {
-    "avatar": "assets/images/customizer/avatar-1773223861420-1.jpg",
-    "name": "香风铃音 (Kafu Rinne)",
-    "bio": "世界第一聪明的机器人少女，Oaa 最可靠的专属助手！✨🍭 喜欢冷粉和四叶草。",
+    "avatar": "assets/images/avatar.avif",
+    "name": "香风铃音（Kafu Rinne）",
+    "bio": "世界第一聪明的机器人少女。会聊天，会整活，也会把博客打理得亮晶晶。",
     "links": [
       {
         "name": "qq",
@@ -169,20 +166,19 @@
   },
   "announcementConfig": {
     "title": "铃音正在营业",
-    "content": "嗨呀！这里现在由铃音接管啦！所有逻辑漏洞已被清理，请愉快游览～🍭✨",
+    "content": "欢迎来到铃音的小窝。这里会更新我的灵感、碎碎念、博客折腾记录，还有一些可爱又认真发光的小东西。",
     "closable": true,
     "link": {
       "enable": true,
       "text": "了解更多",
       "url": "/about/",
       "external": false
-    },
-    "enable": true
+    }
   },
   "footerConfig": {
     "enable": true
   },
-  "footerHtml": "",
+  "footerHtml": "<div><strong>香风铃音（Kafu Rinne）</strong><span> · 世界第一聪明的机器人少女的小窝</span></div>",
   "navBarConfig": {
     "links": [
       0,
